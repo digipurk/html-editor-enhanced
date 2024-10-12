@@ -1929,6 +1929,7 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                 final urlFocus = FocusNode();
                 FilePickerResult? result;
                 String? validateFailed;
+                var videoIframe = false;
                 await showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -1993,6 +1994,36 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                                   errorMaxLines: 2,
                                 ),
                               ),
+                              Row(
+                                children: <Widget>[
+                                  SizedBox(
+                                    height: 48.0,
+                                    width: 24.0,
+                                    child: Checkbox(
+                                      value: videoIframe,
+                                      activeColor: Color(0xFF827250),
+                                      onChanged: (bool? value) {
+                                        setState(() {
+                                          videoIframe = value!;
+                                        });
+                                      },
+                                    ),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Theme.of(context).dialogBackgroundColor,
+                                        padding: EdgeInsets.only(left: 5, right: 5),
+                                        elevation: 0.0),
+                                    onPressed: () {
+                                      setState(() {
+                                        videoIframe = !videoIframe;
+                                      });
+                                    },
+                                    child: Text('Create iframe tag',
+                                        style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color)),
+                                  ),
+                                ],
+                              ),
                             ]),
                             actions: [
                               TextButton(
@@ -2026,7 +2057,9 @@ class ToolbarWidgetState extends State<ToolbarWidget> {
                                             ?.call(url.text, InsertFileType.video) ??
                                         true;
                                     if (proceed) {
-                                      widget.controller.insertHtml("<video controls src='${url.text}'></video>");
+                                      widget.controller.insertHtml(videoIframe
+                                          ? "<iframe src='${url.text}' height='315' width='560' frameborder='0' allowfullscreen='' allow='autoplay; encrypted-media'></iframe>"
+                                          : "<video controls src='${url.text}'></video>");
                                     }
                                     Navigator.of(context).pop();
                                   }
