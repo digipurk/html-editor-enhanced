@@ -1,12 +1,10 @@
 import 'dart:convert';
-// ignore: avoid_web_libraries_in_flutter
+// ignore: avoid_web_libraries_in_flutter, deprecated_member_use
 import 'dart:html' as html;
 
 import 'package:flutter/foundation.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
-import 'package:html_editor_enhanced/src/html_editor_controller_unsupported.dart'
-    as unsupported;
-import 'package:meta/meta.dart';
+import 'package:html_editor_enhanced/src/html_editor_controller_unsupported.dart' as unsupported;
 
 /// Controller for web
 class HtmlEditorController extends unsupported.HtmlEditorController {
@@ -55,14 +53,9 @@ class HtmlEditorController extends unsupported.HtmlEditorController {
   @override
   Future<String> getText() async {
     _evaluateJavascriptWeb(data: {'type': 'toIframe: getText'});
-    var e = await html.window.onMessage.firstWhere(
-        (element) => json.decode(element.data)['type'] == 'toDart: getText');
+    var e = await html.window.onMessage.firstWhere((element) => json.decode(element.data)['type'] == 'toDart: getText');
     String text = json.decode(e.data)['text'];
-    if (processOutputHtml &&
-        (text.isEmpty ||
-            text == '<p></p>' ||
-            text == '<p><br></p>' ||
-            text == '<p><br/></p>')) text = '';
+    if (processOutputHtml && (text.isEmpty || text == '<p></p>' || text == '<p><br></p>' || text == '<p><br/></p>')) text = '';
     return text;
   }
 
@@ -73,8 +66,7 @@ class HtmlEditorController extends unsupported.HtmlEditorController {
     } else {
       _evaluateJavascriptWeb(data: {'type': 'toIframe: getSelectedText'});
     }
-    var e = await html.window.onMessage.firstWhere((element) =>
-        json.decode(element.data)['type'] == 'toDart: getSelectedText');
+    var e = await html.window.onMessage.firstWhere((element) => json.decode(element.data)['type'] == 'toDart: getSelectedText');
     return json.decode(e.data)['text'];
   }
 
@@ -147,8 +139,7 @@ class HtmlEditorController extends unsupported.HtmlEditorController {
   /// Note: This method should only be used for plaintext strings
   @override
   void insertText(String text) {
-    _evaluateJavascriptWeb(
-        data: {'type': 'toIframe: insertText', 'text': text});
+    _evaluateJavascriptWeb(data: {'type': 'toIframe: insertText', 'text': text});
   }
 
   /// Insert HTML at the position of the cursor in the editor
@@ -156,29 +147,19 @@ class HtmlEditorController extends unsupported.HtmlEditorController {
   @override
   void insertHtml(String html) {
     html = _processHtml(html: html);
-    _evaluateJavascriptWeb(
-        data: {'type': 'toIframe: insertHtml', 'html': html});
+    _evaluateJavascriptWeb(data: {'type': 'toIframe: insertHtml', 'html': html});
   }
 
   /// Insert a network image at the position of the cursor in the editor
   @override
   void insertNetworkImage(String url, {String filename = ''}) {
-    _evaluateJavascriptWeb(data: {
-      'type': 'toIframe: insertNetworkImage',
-      'url': url,
-      'filename': filename
-    });
+    _evaluateJavascriptWeb(data: {'type': 'toIframe: insertNetworkImage', 'url': url, 'filename': filename});
   }
 
   /// Insert a link at the position of the cursor in the editor
   @override
   void insertLink(String text, String url, bool isNewWindow) {
-    _evaluateJavascriptWeb(data: {
-      'type': 'toIframe: insertLink',
-      'text': text,
-      'url': url,
-      'isNewWindow': isNewWindow
-    });
+    _evaluateJavascriptWeb(data: {'type': 'toIframe: insertLink', 'text': text, 'url': url, 'isNewWindow': isNewWindow});
   }
 
   /// Clears the focus from the webview by hiding the keyboard, calling the
@@ -219,22 +200,16 @@ class HtmlEditorController extends unsupported.HtmlEditorController {
   /// A function to quickly call a document.execCommand function in a readable format
   @override
   void execCommand(String command, {String? argument}) {
-    _evaluateJavascriptWeb(data: {
-      'type': 'toIframe: execCommand',
-      'command': command,
-      'argument': argument
-    });
+    _evaluateJavascriptWeb(data: {'type': 'toIframe: execCommand', 'command': command, 'argument': argument});
   }
 
   /// A function to execute JS passed as a [WebScript] to the editor. This should
   /// only be used on Flutter Web.
   @override
-  Future<dynamic> evaluateJavascriptWeb(String name,
-      {bool hasReturnValue = false}) async {
+  Future<dynamic> evaluateJavascriptWeb(String name, {bool hasReturnValue = false}) async {
     _evaluateJavascriptWeb(data: {'type': 'toIframe: $name'});
     if (hasReturnValue) {
-      var e = await html.window.onMessage.firstWhere(
-          (element) => json.decode(element.data)['type'] == 'toDart: $name');
+      var e = await html.window.onMessage.firstWhere((element) => json.decode(element.data)['type'] == 'toDart: $name');
       return json.decode(e.data);
     }
   }
@@ -242,38 +217,31 @@ class HtmlEditorController extends unsupported.HtmlEditorController {
   /// Internal function to change list style on Web
   @override
   void changeListStyle(String changed) {
-    _evaluateJavascriptWeb(
-        data: {'type': 'toIframe: changeListStyle', 'changed': changed});
+    _evaluateJavascriptWeb(data: {'type': 'toIframe: changeListStyle', 'changed': changed});
   }
 
   /// Internal function to change line height on Web
   @override
   void changeLineHeight(String changed) {
-    _evaluateJavascriptWeb(
-        data: {'type': 'toIframe: changeLineHeight', 'changed': changed});
+    _evaluateJavascriptWeb(data: {'type': 'toIframe: changeLineHeight', 'changed': changed});
   }
 
   /// Internal function to change text direction on Web
   @override
   void changeTextDirection(String direction) {
-    _evaluateJavascriptWeb(data: {
-      'type': 'toIframe: changeTextDirection',
-      'direction': direction
-    });
+    _evaluateJavascriptWeb(data: {'type': 'toIframe: changeTextDirection', 'direction': direction});
   }
 
   /// Internal function to change case on Web
   @override
   void changeCase(String changed) {
-    _evaluateJavascriptWeb(
-        data: {'type': 'toIframe: changeCase', 'case': changed});
+    _evaluateJavascriptWeb(data: {'type': 'toIframe: changeCase', 'case': changed});
   }
 
   /// Internal function to insert table on Web
   @override
   void insertTable(String dimensions) {
-    _evaluateJavascriptWeb(
-        data: {'type': 'toIframe: insertTable', 'dimensions': dimensions});
+    _evaluateJavascriptWeb(data: {'type': 'toIframe: insertTable', 'dimensions': dimensions});
   }
 
   /// Add a notification to the bottom of the editor. This is styled similar to
@@ -282,14 +250,10 @@ class HtmlEditorController extends unsupported.HtmlEditorController {
   @override
   void addNotification(String html, NotificationType notificationType) {
     if (notificationType == NotificationType.plaintext) {
-      _evaluateJavascriptWeb(
-          data: {'type': 'toIframe: addNotification', 'html': html});
+      _evaluateJavascriptWeb(data: {'type': 'toIframe: addNotification', 'html': html});
     } else {
-      _evaluateJavascriptWeb(data: {
-        'type': 'toIframe: addNotification',
-        'html': html,
-        'alertType': 'alert alert-${notificationType.name}'
-      });
+      _evaluateJavascriptWeb(
+          data: {'type': 'toIframe: addNotification', 'html': html, 'alertType': 'alert alert-${notificationType.name}'});
     }
     recalculateHeight();
   }
